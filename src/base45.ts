@@ -13,13 +13,13 @@ export function encode(byteArrayArg: Uint8Array): string {
     const resultSize = wholeChunkCount * encodedChunkSize + (byteArrayArg.length % chunkSize === 1 ? smallEncodedChunkSize : 0);
 
     const result = new Array(resultSize);
-    var resultIndex = 0;
+    let resultIndex = 0;
     const wholeChunkLength = wholeChunkCount * chunkSize;
     for (let i = 0; i < wholeChunkLength;) {
         const value = byteArrayArg[i++] * byteSize + byteArrayArg[i++];
         result[resultIndex++] = encoding[value % baseSize];
-        result[resultIndex++] = encoding[Math.trunc(value / baseSize) % baseSize];
-        result[resultIndex++] = encoding[Math.trunc(value / baseSizeSquared) % baseSize];
+        result[resultIndex++] = encoding[(value / baseSize | 0) % baseSize];
+        result[resultIndex++] = encoding[(value / baseSizeSquared | 0) % baseSize];
     }
 
     if (byteArrayArg.length % chunkSize) {
@@ -27,16 +27,16 @@ export function encode(byteArrayArg: Uint8Array): string {
         result[result.length - 1] =
             byteArrayArg[byteArrayArg.length - 1] < baseSize
                 ? encoding[0]
-                : encoding[Math.trunc(byteArrayArg[byteArrayArg.length - 1] / baseSize) % baseSize];
+                : encoding[(byteArrayArg[byteArrayArg.length - 1] / baseSize | 0) % baseSize];
     }
-    
+
     return result.join("");
 };
 
 export function decode(utf8StringArg: string): Uint8Array {
     if (utf8StringArg.length === 0) return new Uint8Array;
 
-    var remainderSize = utf8StringArg.length % encodedChunkSize;
+    const remainderSize = utf8StringArg.length % encodedChunkSize;
     if (remainderSize === 1)
         throw new Error("utf8StringArg has incorrect length.");
 
@@ -48,20 +48,19 @@ export function decode(utf8StringArg: string): Uint8Array {
         buffer[i] = found;
     }
 
-    const wholeChunkCount = Math.trunc(buffer.length / encodedChunkSize);
+    const wholeChunkCount = (buffer.length / encodedChunkSize | 0);
     const result = new Uint8Array(wholeChunkCount * chunkSize + (remainderSize === chunkSize ? 1 : 0));
     let resultIndex = 0;
     const wholeChunkLength = wholeChunkCount * encodedChunkSize;
     for (let i = 0; i < wholeChunkLength;) {
         const val = buffer[i++] + baseSize * buffer[i++] + baseSizeSquared * buffer[i++];
-        result[resultIndex++] = Math.trunc(val / byteSize); //result is always in the range 0-255 - % ByteSize omitted.
+        result[resultIndex++] = (val / byteSize | 0); //result is always in the range 0-255 - % ByteSize omitted.
         result[resultIndex++] = val % byteSize;
     }
 
-    if (remainderSize === 0)
-        return result;
+    if (remainderSize)
+        result[result.length - 1] = buffer[buffer.length - 2] + baseSize * buffer[buffer.length - 1]; //result is always in the range 0-255 - % ByteSize omitted.
 
-    result[result.length - 1] = buffer[buffer.length - 2] + baseSize * buffer[buffer.length - 1]; //result is always in the range 0-255 - % ByteSize omitted.
     return result;
 }
 

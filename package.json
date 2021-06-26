@@ -4,7 +4,7 @@
   "type": "module",
   "main": "./lib/base45.js",
   "types": "./lib/base45.d.ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/ehn-digital-green-development/base45-js",
   "author": {
     "name": "Dirk-Willem van Gulik",
