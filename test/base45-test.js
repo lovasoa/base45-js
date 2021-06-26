@@ -1,17 +1,5 @@
-import { ok, deepStrictEqual, strictEqual } from "assert";
+import { deepStrictEqual, strictEqual, throws } from "assert";
 import * as b45 from "../lib/base45.js";
-
-//TODO replace with assert.throws if possible
-function assertThrowsWithMessage(f, expectedMessage) {
-    try {
-        f();
-        return false;
-    }
-    catch (e) {
-        strictEqual(e.message, expectedMessage);
-        return true;
-    }
-}
 
 describe("RFC examples", () => {
     it("encode array -empty-", () => strictEqual(b45.encode(new Uint8Array([])), ""));
@@ -23,11 +11,11 @@ describe("RFC examples", () => {
     it("encode example 2 - base-45", () => strictEqual(b45.encode(Buffer.from("base-45", "utf-8")), "UJCLQE7W581"));
     it("encode example 3 - ietf!", () => strictEqual(b45.encode(Buffer.from("ietf!", "utf-8")), "QED8WEX0"));
 
-    it("decode - bad length 1", () => ok(assertThrowsWithMessage(() => b45.decode("1"), "utf8StringArg has incorrect length.")));
-    it("decode - bad length 4", () => ok(assertThrowsWithMessage(() => b45.decode("1234"), "utf8StringArg has incorrect length.")));
-    it("decode - invalid characters 0", () => ok(assertThrowsWithMessage(() => b45.decode("^1"), "Invalid character at position 0.")));
-    it("decode - invalid characters 1", () => ok(assertThrowsWithMessage(() => b45.decode("0^"), "Invalid character at position 1.")));
-    it("decode - invalid characters 10", () => ok(assertThrowsWithMessage(() => b45.decode("0123456789^"), "Invalid character at position 10.")));
+    it("decode - bad length 1", () => throws(() => b45.decode("1"), /length 1/));
+    it("decode - bad length 4", () => throws(() => b45.decode("1234"), /length 4/));
+    it("decode - invalid characters 0", () => throws(() => b45.decode("^1"), /Invalid character '\^' at position 0/));
+    it("decode - invalid characters 1", () => throws(() => b45.decode("0^"), /Invalid character '\^' at position 1/));
+    it("decode - invalid characters 10", () => throws(() => b45.decode("0123456789&"), /Invalid character '&' at position 10/));
 
     it("decode -empty-", () => deepStrictEqual(b45.decode(""), new Uint8Array([])));
     it("decode 00", () => deepStrictEqual(b45.decode("00"), new Uint8Array([0])));
@@ -38,5 +26,4 @@ describe("RFC examples", () => {
     it("decode example 3 - QED8WEX0 ->ietf!", () => deepStrictEqual(b45.decode("QED8WEX0"), new Uint8Array([105, 101, 116, 102, 33])));
 
     it("decode convenience - UJCLQE7W581 -> base-45", () => strictEqual(b45.decodeToUtf8String("UJCLQE7W581"), "base-45"));
-
 });

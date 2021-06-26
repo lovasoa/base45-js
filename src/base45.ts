@@ -9,7 +9,7 @@ const encoding = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:".split('');
 const decoding = Object.fromEntries(encoding.map((l, i) => [l, i]));
 
 export function encode(byteArrayArg: Uint8Array): string {
-    const wholeChunkCount = Math.trunc(byteArrayArg.length / chunkSize);
+    const wholeChunkCount = (byteArrayArg.length / chunkSize | 0);
     const resultSize = wholeChunkCount * encodedChunkSize + (byteArrayArg.length % chunkSize === 1 ? smallEncodedChunkSize : 0);
 
     const result = new Array(resultSize);
@@ -38,13 +38,14 @@ export function decode(utf8StringArg: string): Uint8Array {
 
     const remainderSize = utf8StringArg.length % encodedChunkSize;
     if (remainderSize === 1)
-        throw new Error("utf8StringArg has incorrect length.");
+        throw new Error(`A string of length ${utf8StringArg.length} is not valid base45: ${utf8StringArg}`);
 
     const buffer = new Uint8Array(utf8StringArg.length);
     for (let i = 0; i < utf8StringArg.length; ++i) {
-        const found = decoding[utf8StringArg[i]];
+        const char = utf8StringArg[i];
+        const found = decoding[char];
         if (found === undefined)
-            throw new Error(`Invalid character at position ${i}.`);
+            throw new Error(`Invalid character '${char}' at position ${i}.`);
         buffer[i] = found;
     }
 
