@@ -11,6 +11,8 @@ describe("RFC examples", () => {
     it("encode example 2 - base-45", () => strictEqual(b45.encode(Buffer.from("base-45", "utf-8")), "UJCLQE7W581"));
     it("encode example 3 - ietf!", () => strictEqual(b45.encode(Buffer.from("ietf!", "utf-8")), "QED8WEX0"));
 
+    it("encode simple array - ietf!", () => strictEqual(b45.encode("ietf!".split('').map(x => x.charCodeAt(0))), "QED8WEX0"));
+
     it("decode - bad length 1", () => throws(() => b45.decode("1"), /length 1/));
     it("decode - bad length 4", () => throws(() => b45.decode("1234"), /length 4/));
     it("decode - invalid characters 0", () => throws(() => b45.decode("^1"), /Invalid character '\^' at position 0/));

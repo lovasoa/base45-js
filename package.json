@@ -4,7 +4,7 @@
   "type": "module",
   "main": "./lib/base45.js",
   "types": "./lib/base45.d.ts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://github.com/lovasoe/base45-ts",
   "author": {
     "name": "Dirk-Willem van Gulik",

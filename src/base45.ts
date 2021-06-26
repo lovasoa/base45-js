@@ -1,12 +1,11 @@
 const baseSize = 45;
-const baseSizeSquared = 2025;
+const baseSizeSquared = baseSize * baseSize;
 const chunkSize = 2;
 const encodedChunkSize = 3;
 const smallEncodedChunkSize = 2;
-const byteSize = 256;
 
-const encoding = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:".split('');
-const decoding = Object.fromEntries(encoding.map((l, i) => [l, i]));
+const encoding = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
+const decoding = new Map(encoding.split('').map((l, i) => [l, i]));
 
 /**
  * Encode binary data to base45
@@ -15,16 +14,17 @@ const decoding = Object.fromEntries(encoding.map((l, i) => [l, i]));
  */
 export function encode(byteArrayArg: Uint8Array | number[]): string {
     const wholeChunkCount = (byteArrayArg.length / chunkSize | 0);
-    const resultSize = wholeChunkCount * encodedChunkSize + (byteArrayArg.length % chunkSize === 1 ? smallEncodedChunkSize : 0);
+    const resultSize =
+        wholeChunkCount * encodedChunkSize +
+        (byteArrayArg.length % chunkSize === 1 ? smallEncodedChunkSize : 0);
 
     const result = new Array(resultSize);
-    let resultIndex = 0;
-    const wholeChunkLength = wholeChunkCount * chunkSize;
-    for (let i = 0; i < wholeChunkLength;) {
-        const value = byteArrayArg[i++] * byteSize + byteArrayArg[i++];
-        result[resultIndex++] = encoding[value % baseSize];
-        result[resultIndex++] = encoding[(value / baseSize | 0) % baseSize];
-        result[resultIndex++] = encoding[(value / baseSizeSquared | 0) % baseSize];
+    for (let i = 0; i < byteArrayArg.length - 1; i += 2) {
+        let value = (byteArrayArg[i] << 8) | byteArrayArg[i + 1];
+        const resultIndex = 3 * i / 2;
+        result[resultIndex] = encoding[value % baseSize];
+        result[resultIndex + 1] = encoding[(value / baseSize | 0) % baseSize];
+        result[resultIndex + 2] = encoding[(value / baseSizeSquared | 0) % baseSize];
     }
 
     if (byteArrayArg.length % chunkSize) {
@@ -53,7 +53,7 @@ export function decode(utf8StringArg: string): Uint8Array {
     const buffer = new Uint8Array(utf8StringArg.length);
     for (let i = 0; i < utf8StringArg.length; ++i) {
         const char = utf8StringArg[i];
-        const found = decoding[char];
+        const found = decoding.get(char);
         if (found === undefined)
             throw new Error(`Invalid character '${char}' at position ${i}.`);
         buffer[i] = found;
@@ -61,16 +61,17 @@ export function decode(utf8StringArg: string): Uint8Array {
 
     const wholeChunkCount = (buffer.length / encodedChunkSize | 0);
     const result = new Uint8Array(wholeChunkCount * chunkSize + (remainderSize === chunkSize ? 1 : 0));
-    let resultIndex = 0;
-    const wholeChunkLength = wholeChunkCount * encodedChunkSize;
-    for (let i = 0; i < wholeChunkLength;) {
-        const val = buffer[i++] + baseSize * buffer[i++] + baseSizeSquared * buffer[i++];
-        result[resultIndex++] = (val / byteSize | 0); //result is always in the range 0-255 - % ByteSize omitted.
-        result[resultIndex++] = val % byteSize;
+    for (let i = 0; i < buffer.length - 2; i += 3) {
+        const val = buffer[i] + baseSize * buffer[i + 1] + baseSizeSquared * buffer[i + 2];
+        const resultIndex = 2 * i / 3;
+        result[resultIndex] = val >> 8; //result is always in the range 0-255 - % ByteSize omitted.
+        result[resultIndex + 1] = val & 0xff;
     }
 
     if (remainderSize)
-        result[result.length - 1] = buffer[buffer.length - 2] + baseSize * buffer[buffer.length - 1]; //result is always in the range 0-255 - % ByteSize omitted.
+        result[result.length - 1] =
+            buffer[buffer.length - 2] +
+            baseSize * buffer[buffer.length - 1]; //result is always in the range 0-255 - % ByteSize omitted.
 
     return result;
 }
