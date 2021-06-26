@@ -8,7 +8,12 @@ const byteSize = 256;
 const encoding = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:".split('');
 const decoding = Object.fromEntries(encoding.map((l, i) => [l, i]));
 
-export function encode(byteArrayArg: Uint8Array): string {
+/**
+ * Encode binary data to base45
+ * @param byteArrayArg An array of bytes to encode 
+ * @returns a base45-encoded string
+ */
+export function encode(byteArrayArg: Uint8Array | number[]): string {
     const wholeChunkCount = (byteArrayArg.length / chunkSize | 0);
     const resultSize = wholeChunkCount * encodedChunkSize + (byteArrayArg.length % chunkSize === 1 ? smallEncodedChunkSize : 0);
 
@@ -33,6 +38,11 @@ export function encode(byteArrayArg: Uint8Array): string {
     return result.join("");
 };
 
+/**
+ * Decode a base45-encoded string
+ * @param utf8StringArg A base45-encoded string 
+ * @returns a typed array containing the decoded data
+ */
 export function decode(utf8StringArg: string): Uint8Array {
     if (utf8StringArg.length === 0) return new Uint8Array;
 
@@ -65,7 +75,13 @@ export function decode(utf8StringArg: string): Uint8Array {
     return result;
 }
 
-export function decodeToUtf8String(utf8StringArg: string) {
+/**
+ * Same as decode, but returns a string instead of a typed array.
+ * If the base45-encoded data was not valid UTF-8, throws an error.
+ * @param utf8StringArg base45-encoded string representing an utf8 string
+ * @returns the decoded string
+ */
+export function decodeToUtf8String(utf8StringArg: string): string {
     return new TextDecoder().decode(decode(utf8StringArg));
 }
 
