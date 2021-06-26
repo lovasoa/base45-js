@@ -4,9 +4,9 @@
 
 Simple typescript base45 (charset of Qr codes, alphanumeric mode) encoder/decoder.
 
-Run as `npm test` to get an idea of what it does.
+This library exports an ES module, together with the required type annotations. 
 
-Typical use:
+## Example
 
 ```ts
 import * as b45 from "base45-ts";
@@ -66,3 +66,10 @@ Encode binary data to base45
 #### Returns
 
 a base45-encoded `string`
+
+## Development
+
+This library doesn't have any dependency.
+
+ - Build the code with `npm run build`
+ - Test with `npm test`
