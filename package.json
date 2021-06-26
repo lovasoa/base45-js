@@ -4,7 +4,7 @@
   "type": "module",
   "main": "./lib/base45.js",
   "types": "./lib/base45.d.ts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/lovasoe/base45-ts",
   "author": {
     "name": "Dirk-Willem van Gulik",
@@ -14,6 +14,9 @@
     {
       "name": "Steve Kellaway",
       "email": "steve.kellaway@mefitihe.com"
+    },
+    {
+      "name": "Ophir LOJKINE"
     }
   ],
   "repository": {
