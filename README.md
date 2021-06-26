@@ -1,3 +1,7 @@
+[![npm](https://img.shields.io/npm/v/base45-ts)](https://www.npmjs.com/package/base45-ts)
+
+# base45 typescript implementation
+
 Simple typescript base45 (charset of Qr codes, alphanumeric mode) encoder/decoder.
 
 Run as `npm test` to get an idea of what it does.
