@@ -5,7 +5,7 @@
   "main": "./lib/base45.js",
   "types": "./lib/base45.d.ts",
   "version": "1.0.1",
-  "homepage": "https://github.com/ehn-digital-green-development/base45-js",
+  "homepage": "https://github.com/lovasoe/base45-ts",
   "author": {
     "name": "Dirk-Willem van Gulik",
     "email": "dirkx@apache.org"
@@ -18,15 +18,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/iehn-digital-green-development/base45-js"
+    "url": "https://github.com/lovasoa/base45-ts"
   },
   "bugs": {
-    "url": "https://github.com/ehn-digital-green-development/base45-js/issues"
+    "url": "https://github.com/lovasoa/base45-ts/issues"
   },
   "licenses": [
     {
       "type": "Apache-2.0",
-      "url": "https://github.com/ehn-digital-green-development/base45/blob/master/LICENSE-ASF-2.0.txt"
+      "url": "https://github.com/lovasoa/base45-ts/blob/master/LICENSE-ASF-2.0.txt"
     }
   ],
   "engines": {
@@ -43,7 +43,8 @@
   "keywords": [
     "codec",
     "dgc",
-    "ehn"
+    "ehn",
+    "QR code"
   ],
   "vsTest": {
     "testRoot": "./test"
