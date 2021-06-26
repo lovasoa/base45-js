@@ -1,6 +1,9 @@
 {
-  "name": "base45-js",
-  "description": "Encode/decode base45 data - including non-utf8 compliant data",
+  "name": "base45-ts",
+  "description": "type-safe base45 encoder and decoder",
+  "type": "module",
+  "main": "./lib/base45.js",
+  "types": "./lib/base45.d.ts",
   "version": "1.0.0",
   "homepage": "https://github.com/ehn-digital-green-development/base45-js",
   "author": {
@@ -26,17 +29,22 @@
       "url": "https://github.com/ehn-digital-green-development/base45/blob/master/LICENSE-ASF-2.0.txt"
     }
   ],
-  "main": "lib/base45",
   "engines": {
     "node": ">= 0.6.0"
   },
   "scripts": {
-    "test": "mocha test"
+    "test": "npm run build && mocha test",
+    "build": "tsc"
   },
   "devDependencies": {
-    "mocha": "^8.3.2"
+    "mocha": "^8.3.2",
+    "typescript": "^4.3.4"
   },
-  "keywords": [],
+  "keywords": [
+    "codec",
+    "dgc",
+    "ehn"
+  ],
   "vsTest": {
     "testRoot": "./test"
   }

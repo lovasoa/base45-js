@@ -1,11 +1,11 @@
-Simple base45 (charset of Qr codes, alphanumeric mode) encoder/decoder.
+Simple typescript base45 (charset of Qr codes, alphanumeric mode) encoder/decoder.
 
-Run as 'npm test' to get an idea of what it does.
+Run as `npm test` to get an idea of what it does.
 
 Typical use:
 
-```
-const b45 = require("base45-js");
+```ts
+import * as b45 from "base45-ts";
 
 const e = b45.encode(Buffer.from('Hello!','utf-8'))
 console.log(e); // Will output %69 VD92EX0"
